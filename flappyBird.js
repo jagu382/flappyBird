@@ -35,10 +35,6 @@ let gravity = 2;
 let gameOver = false;
 
 
-// Pause intervals initially
-// let gravityInterval;
-// let pipeGenerator;
-
 //! start game
 function startGame() {
   // Start background music
@@ -58,7 +54,6 @@ startScreen.addEventListener("click", startGame);
 
 
 //! gravity loop
-// let gravityInterval = setInterval(applyGravity, 20);
 
 function applyGravity() {
   if (gameOver) return;
