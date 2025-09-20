@@ -1,9 +1,19 @@
+let startScreen = document.getElementById("startScreen");
+
 //! create board & bird
 let board = document.getElementById("board"); 
 let bird = document.createElement("div");
 bird.className = "bird";
 board.appendChild(bird);
 
+//!sounds
+let jump=new Audio("./sounds/wing.mp3")
+let background=new Audio("./sounds/background.mp3")
+let die=new Audio("./sounds/die.mp3")
+let point= new Audio("./sounds/point.mp3")
+
+background.volume=0.4;
+background.loop=true;
 //! score
 let score = 0;
 let scoreDisplay = document.createElement("div");
@@ -17,14 +27,38 @@ restartBtn.id = "restartBtn";
 restartBtn.textContent = " oops ! game over  click to Restart";
 restartBtn.style.display = "none";   // ✅ hide initially
 board.appendChild(restartBtn);
+background.play()
 
 //! bird position
 let birdTop = 200;   
 let gravity = 2;     
 let gameOver = false;
 
+
+// Pause intervals initially
+// let gravityInterval;
+// let pipeGenerator;
+
+//! start game
+function startGame() {
+  // Start background music
+  background.play();
+
+  // Start gravity and pipe generation
+  gravityInterval = setInterval(applyGravity, 20);
+  pipeGenerator = setInterval(createPipe, 2000);
+
+  // Hide start screen
+  startScreen.style.display = "none";
+}
+
+// Listen for click on start screen
+startScreen.addEventListener("click", startGame);
+
+
+
 //! gravity loop
-let gravityInterval = setInterval(applyGravity, 20);
+// let gravityInterval = setInterval(applyGravity, 20);
 
 function applyGravity() {
   if (gameOver) return;
@@ -43,16 +77,16 @@ document.addEventListener("keydown", (e) => {
     birdTop -= 40; 
     if (birdTop < 0) birdTop = 0;
     bird.style.top = birdTop + "px";
+    jump.play()
   }
 });
 
 //! pipes
-let pipeGenerator = setInterval(createPipe, 2000);
 
 function createPipe() {
   if (gameOver) return;
 
-  let pipeGap = 120; 
+  let pipeGap = 40; 
   let pipeHeight = Math.floor(Math.random() * 200) + 50;
 
   let topPipe = document.createElement("div");
@@ -103,6 +137,7 @@ function createPipe() {
         score++;
         scoreDisplay.textContent = "Score: " + score;
         passed = true;
+        point.play()
       }
     }
   }, 20);
@@ -123,6 +158,8 @@ function isCollide(rect1, rect2) {
 function endGame() {
   gameOver = true;
   restartBtn.style.display = "block"; // show restart button
+  background.pause()
+  die.play()
 }
 
 //! restart function
@@ -141,4 +178,7 @@ restartBtn.addEventListener("click", () => {
 
   gameOver = false;
   restartBtn.style.display = "none"; // hide button
+  background.play()
 });
+
+
